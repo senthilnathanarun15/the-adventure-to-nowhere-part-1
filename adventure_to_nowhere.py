@@ -1,0 +1,252 @@
+import random
+
+import streamlit as st
+from streamlit import session_state, subheader
+
+st.set_page_config(page_title="adventure to nowhere",page_icon="⚔️",layout = "centered")
+st.html('''<style>
+        div[data-testid="stMetricValue"]{
+        font-size : 24px;
+        color : #1FB9FF;
+        }
+        .stButton > button {
+        height: 50px;
+        width :100% ;
+        font-weight : bold;
+        border-radius :8px;
+        }
+        ''')
+
+
+def set_background(url):
+    st.markdown(
+        f"""
+        <style>
+        .stApp{{
+            background-image : url("{url}");
+            background-attachment : fixed;
+            background-size : cover;
+            background-position : center;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+backgrounds = {
+    "cassle": "https://images.unsplash.com/photo-1655037332271-a310b897908d?q=80&w=1259&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "village": "https://plus.unsplash.com/premium_photo-1661905195522-41da87e831d8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "forest": "https://images.unsplash.com/photo-1440342359743-84fcb8c21f21?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "talking_to_man": "https://plus.unsplash.com/premium_photo-1661905195522-41da87e831d8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "snake attack": "https://images.unsplash.com/photo-1595963739785-f38b79b210b9?q=80&w=1113&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "shop": "https://plus.unsplash.com/premium_vector-1781278487736-f49a9ba77e41?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "mountains": "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "bear_attack": "https://images.unsplash.com/photo-1696340871120-d7a34658b1bc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+}
+if "game_init" not in session_state :
+    session_state.game_init = False
+    session_state.game_start_1 = False
+    session_state.location = "village"
+    session_state.potion = 0
+    session_state.max_health = 100
+    session_state.charactor_health = 100
+    session_state.gold = 0
+    session_state.bear_health = 1
+    session_state.weppon = 'bare hands'
+    session_state.weppon_dmg = 7
+    session_state.bear_dmg = 1
+    session_state.chest_open= False
+    session_state.snake_attack = False
+if not session_state.game_init:
+    session_state.game_init = True
+    session_state.max_health = session_state.charactor_health
+    session_state.bear_health = random.randint(10,50)
+    session_state.bear_dmg = random.randint(10,20)
+if session_state.location in backgrounds :
+    set_background(backgrounds[session_state.location])
+
+    c1,c2,c3 = st.columns(3)
+    with c1:
+        #st.write(f"you have {session_state.potion} potions")
+        st.markdown(
+                f'<p style = "color : #AA0BF4 ;font-weight:bold; font-size : 20px;">'
+                f'🧪 portions: {session_state.potion}</p>',
+                unsafe_allow_html=True
+            )
+    with c2:
+        #st.write(f"you have {session_state.charactor_health} of health")
+        st.markdown(
+            f'<p style = "color :#EB1414 ;font-weight:bold; font-size : 20px;">'
+            f'❤️{session_state.charactor_health}/{session_state.max_health}</p>',
+            unsafe_allow_html=True
+        )
+    with c3:
+        #st.write(f"you have {session_state.gold} gold")
+        st.markdown(
+            f'<p style = "color :#D4AF37 ;font-weight:bold; font-size : 20px;">'
+            f'gold : {session_state.gold}</p>',
+            unsafe_allow_html=True
+        )
+    st.divider()
+if session_state.game_init :
+    subheader("this is the war struck village")
+    if session_state.location == "village" :
+        col1,col2,col3 = st.columns(3)
+        with col1 :
+            if st.button("enter the the cassle"):
+                session_state.location = "cassle"
+                st.rerun()
+
+        with col2:
+            if st.button("go on the unmarked way"):
+                session_state.location = "snake attack"
+                st.rerun()
+        with col3:
+            if st.button(" you see a man "):
+                session_state.location = "talking_to_man"
+                st.rerun()
+
+if session_state.location == "cassle":
+    if not session_state.chest_open :
+        st.write("the cassle is almost gone . luckly there is a chest . inside is a map ,a compass , 50 gold , a rusty sword ,and a bottle with health potion with a recipy")
+        session_state.potion = 1
+        session_state.gold = 50
+        session_state.weppon = "Rusty Sword"
+        session_state.weppon_dmg = 15
+        set_background=backgrounds.get(session_state.location,"https://images.unsplash.com/photo-1655037332271-a310b897908d?q=80&w=1259&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+        session_state.chest_open = True
+    else :
+        st.write("the chest is already open")
+
+    if st.button("return to the village"):
+        session_state.location = "village"
+        st.rerun()
+elif session_state.location == "talking_to_man":
+    st.write('he says that there is a way to the secret forrest')
+    if st.button("go"):
+            session_state.location = "forest"
+            st.rerun()
+    if st.button("ignore him"):
+            session_state.location = "snake attack"
+            st.rerun()
+elif session_state.location == "snake attack" :
+    if not session_state.snake_attack :
+        st.write("as you went on in the bushes you saw a big forest , and felt a sudden pain . IT was a snake!!!")
+        session_state.charactor_health = session_state.max_health - 20
+        if st.button("do you want to use your health portion "):
+            if session_state.potion > 0:
+                session_state.potion -=1
+                session_state.charactor_health += 30
+                session_state.location = "forest"
+                st.rerun()
+        elif session_state.potion == 0 :
+                st.write('you dont have enough health portions')
+                session_state.location = "forest"
+                st.rerun()
+        if st.button("contineu to forrest"):
+                session_state.location = "forest"
+                st.rerun()
+    else:
+        st.write("you have already killed the snake")
+        if st.button("contineu to forrest"):
+                session_state.location = "forest"
+                st.rerun()
+elif session_state.location == "forest" :
+    st.write('you see a big mountain , near you there is also a shop .')
+    if st.button("do you want to enter the shop ") :
+        session_state.location = "shop"
+        st.rerun()
+    if st.button("do want to contineu to the mountains"):
+        session_state.location = "mountains"
+        st.rerun()
+if  session_state.location == "shop":
+    colm1,colm2 = st.columns(2)
+    with colm1 :
+        if st.button("health portions , 25 gold"):
+            if session_state.gold >= 25 :
+                session_state.gold -= 25
+                session_state.potion +=1
+                session_state.location = "shop"
+                st.rerun()
+            else:
+                st.write("sorry you don't have enough gold")
+    if st.button("return"):
+        session_state.location = "forest"
+        st.rerun()
+elif session_state.location == "mountains":
+    st.write("you saw a bear as you conineud , you are to far from the shop or the peak of the mountain ,you will neeed to fight it")
+    if st.button("start fight"):
+        session_state.location = "bear_attack"
+        st.rerun()
+elif session_state.location == "bear_attack":
+    st.write(f"the bear deals {session_state.bear_dmg}")
+    st.write(f"the bear has {session_state.bear_health}health")
+    st.write(f"use your {session_state.weppon} which deals {session_state.weppon_dmg}damage")
+    if session_state.bear_health > 0 and session_state.charactor_health > 0 :
+        colm1,colm2=st.columns(2)
+        with colm1:
+            if st.button("jump hit"):
+                session_state.bear_health -= session_state.weppon_dmg
+                session_state.charactor_health -= session_state.bear_dmg
+                st.rerun()
+
+        with colm2:
+            if st.button("use portion"):
+                if session_state.potion > 0:
+                    session_state.potion -= 1
+                    session_state.charactor_health = min(session_state.max_health,session_state.charactor_health + 40)
+                    st.rerun()
+    if session_state.bear_health  <= 0:
+        st.balloons()
+        session_state.location="peak"
+        st.rerun()
+
+    elif session_state.charactor_health <= 0:
+        st.write("you have died,to restart plz press restart")
+        if st.button("restart"):
+            session_state.game_init = False
+            st.rerun()
+
+if session_state.location == "peak":
+    st.write("then you saw the peak of the mountain, and there the old village,you suddenly remember about how you came here, By a PORTAL !!!,now that same portal comes afain but to a different place,do you want to enter")
+    if st.button("enter"):
+        session_state.location="credits"
+        st.rerun()
+    else:
+        st.write("you got sucked in the portal")
+        if st.button("contineu"):
+            session_state.location = "credits"
+
+if session_state.location == "credits":
+    st.write("hi this is the maker of this game,i made this for the stardance challenge and this game and logic has taught me a lot about many things,my goal is the cmf buds ,so plz rate this game as you think it is,i wish you luck and i think you will do to me too , tx for playing part 1")
+
+if st.button("restart"):
+    session_state.game_init = False
+    session_state.game_start_1 = False
+    session_state.location = "village"
+    session_state.potion = 0
+    session_state.max_health = 100
+    session_state.charactor_health = 100
+    session_state.gold = 0
+    session_state.bear_health = 1
+    session_state.weppon = 'bare hands'
+    session_state.weppon_dmg = 7
+    session_state.bear_dmg = 1
+    session_state.chest_open= False
+    session_state.snake_attack = False
+    st.rerun()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
